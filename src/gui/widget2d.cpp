@@ -40,8 +40,8 @@ void asclepios::gui::Widget2D::initData()
 		vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
 	m_vtkWidget = std::make_unique<vtkWidget2D>();
 	m_qtvtkWidget = new QVTKOpenGLNativeWidget(this);
-	m_qtvtkWidget->SetRenderWindow(m_renderWindow[0]);
-	m_vtkWidget->setRenderWindow(m_qtvtkWidget->GetRenderWindow());
+	m_qtvtkWidget->setRenderWindow(m_renderWindow[0]);
+	m_vtkWidget->setRenderWindow(m_qtvtkWidget->renderWindow());
 	m_vtkEvents = std::make_unique<vtkEventFilter>(this);
 }
 
@@ -186,7 +186,7 @@ void asclepios::gui::Widget2D::onSetMaximized() const
 void asclepios::gui::Widget2D::onRenderFinished()
 {
 	m_vtkWidget->setInteractor(m_qtvtkWidget->
-		GetRenderWindow()->GetInteractor());
+		renderWindow()->GetInteractor());
 	m_vtkWidget->render();
 	auto const max = m_image->getIsMultiFrame()
 		? m_image->getNumberOfFrames() - 1
@@ -219,7 +219,7 @@ void asclepios::gui::Widget2D::onChangeImage(int t_index)
 	{
 		auto* interactorStyle =
 			dynamic_cast<vtkWidget2DInteractorStyle*>(
-				m_qtvtkWidget->GetRenderWindow()->
+				m_qtvtkWidget->renderWindow()->
 				GetInteractor()->GetInteractorStyle());
 		if (interactorStyle)
 		{
@@ -241,7 +241,7 @@ void asclepios::gui::Widget2D::connectScroll()
 		m_scrollConnection = vtkSmartPointer<vtkEventQtSlotConnect>::New();
 	}
 	m_scrollConnection->Connect(
-		m_qtvtkWidget->GetRenderWindow()->GetInteractor()->GetInteractorStyle(),
+		m_qtvtkWidget->renderWindow()->GetInteractor()->GetInteractorStyle(),
 		changeScrollValue, this,
 		SLOT(onChangeScrollValue(vtkObject*, unsigned long, void*, void*)));
 	Q_UNUSED(connect(m_scroll, &QScrollBar::valueChanged,
@@ -268,7 +268,7 @@ void asclepios::gui::Widget2D::disconnectScroll() const
 	if (m_scrollConnection)
 	{
 		m_scrollConnection->Disconnect(
-			m_qtvtkWidget->GetRenderWindow()
+			m_qtvtkWidget->renderWindow()
 			->GetInteractor()->GetInteractorStyle(),
 			changeScrollValue,
 			this, SLOT(onChangeScrollValue(vtkObject*, unsigned long, void*, void*)));
@@ -283,8 +283,8 @@ void asclepios::gui::Widget2D::resetWidgets()
 		m_vtkWidget.reset();
 	}
 	m_vtkWidget = std::make_unique<vtkWidget2D>();
-	m_qtvtkWidget->SetRenderWindow(vtkNew<vtkGenericOpenGLRenderWindow>());
-	m_renderWindow[0] = m_qtvtkWidget->GetRenderWindow();
+	m_qtvtkWidget->setRenderWindow(vtkNew<vtkGenericOpenGLRenderWindow>());
+	m_renderWindow[0] = m_qtvtkWidget->renderWindow();
 	m_vtkWidget->setRenderWindow(m_renderWindow[0]);
 	m_renderWindow[0]->Render();
 }

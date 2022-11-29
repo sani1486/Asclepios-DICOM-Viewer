@@ -73,7 +73,7 @@ void asclepios::gui::WidgetMPR::onActivateWidget(const bool& t_flag, QObject* t_
 	{
 		if (widget == t_object)
 		{
-			m_widgetMPR->setActiveRenderWindow(widget->GetRenderWindow());
+			m_widgetMPR->setActiveRenderWindow(widget->renderWindow());
 		}
 	}
 	if (t_flag)
@@ -94,9 +94,9 @@ void asclepios::gui::WidgetMPR::onFinishedRenderAsync()
 		widget->setVisible(true);
 	}
 	m_widgetMPR->setRenderWindowsMPR(
-		m_qtvtkWidgets[0]->GetRenderWindow(),
-		m_qtvtkWidgets[1]->GetRenderWindow(),
-		m_qtvtkWidgets[2]->GetRenderWindow());
+		m_qtvtkWidgets[0]->renderWindow(),
+		m_qtvtkWidgets[1]->renderWindow(),
+		m_qtvtkWidgets[2]->renderWindow());
 	m_widgetMPR->render();
 	m_toolbar->getUI().toolButtonReslicer->setVisible(true);
 	m_toolbar->getUI().toolButtonReset->setVisible(true);
@@ -110,7 +110,7 @@ void asclepios::gui::WidgetMPR::initData()
 	{
 		m_qtvtkWidgets[i] = new QVTKOpenGLNativeWidget(this);
 		m_renderWindow[i] = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
-		m_qtvtkWidgets[i]->SetRenderWindow(m_renderWindow[i]);
+		m_qtvtkWidgets[i]->setRenderWindow(m_renderWindow[i]);
 		m_qtvtkWidgets[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		m_qtvtkWidgets[i]->setVisible(false);
 	}

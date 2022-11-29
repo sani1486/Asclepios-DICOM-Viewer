@@ -28,7 +28,7 @@ void asclepios::gui::Widget3D::render()
 		startLoadingAnimation();
 		m_vtkWidget->setImage(m_image);
 		m_vtkWidget->setSeries(m_series);
-		m_vtkWidget->setInteractor(m_qtvtkWidget->GetInteractor());
+		m_vtkWidget->setInteractor(m_qtvtkWidget->interactor());
 		m_future = QtConcurrent::run(onRenderAsync, this);
 		Q_UNUSED(connect(this, &Widget3D::finishedRenderAsync,
 			this, &Widget3D::onFinishedRenderAsync));
@@ -78,7 +78,7 @@ void asclepios::gui::Widget3D::onfilterChanged(const QString& t_filter) const
 	if (m_qtvtkWidget && m_vtkWidget)
 	{
 		m_vtkWidget->setFilter(t_filter);
-		m_qtvtkWidget->GetRenderWindow()->Render();
+		m_qtvtkWidget->renderWindow()->Render();
 	}
 }
 
@@ -86,7 +86,7 @@ void asclepios::gui::Widget3D::onfilterChanged(const QString& t_filter) const
 void asclepios::gui::Widget3D::onCropPressed(const bool& t_pressed) const
 {
 	m_vtkWidget->activateBoxWidget(t_pressed);
-	m_qtvtkWidget->GetRenderWindow()->Render();
+	m_qtvtkWidget->renderWindow()->Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +115,7 @@ void asclepios::gui::Widget3D::onSetMaximized() const
 void asclepios::gui::Widget3D::onFinishedRenderAsync()
 {
 	auto* const renderWindow =
-		m_qtvtkWidget->GetRenderWindow();
+		m_qtvtkWidget->renderWindow();
 	renderWindow->AddRenderer(m_vtkWidget->
 		getRenderWindows()[0]->GetRenderers()->
 		GetFirstRenderer());
@@ -154,8 +154,8 @@ void asclepios::gui::Widget3D::initView()
 void asclepios::gui::Widget3D::initData()
 {
 	m_qtvtkWidget = new QVTKOpenGLNativeWidget(this);
-	m_qtvtkWidget->SetRenderWindow(vtkNew<vtkGenericOpenGLRenderWindow>());
-	m_qtvtkWidget->GetRenderWindow()->SetDoubleBuffer(true);
+	m_qtvtkWidget->setRenderWindow(vtkNew<vtkGenericOpenGLRenderWindow>());
+	m_qtvtkWidget->renderWindow()->SetDoubleBuffer(true);
 	m_vtkWidget = std::make_unique<vtkWidget3D>();
 	m_toolbar = new ToolbarWidget3D(this);
 	m_vtkEvents = std::make_unique<vtkEventFilter>(this);

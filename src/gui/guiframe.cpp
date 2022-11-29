@@ -2,7 +2,7 @@
 #include <QDesktopWidget>
 #include <QPushButton>
 #include <QMenuBar>
-
+#include <QWindowStateChangeEvent>
 #include "gui.h"
 #include "utils.h"
 

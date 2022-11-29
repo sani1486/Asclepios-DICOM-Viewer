@@ -4,6 +4,7 @@
 #include "corerepository.h"
 #include "utils.h"
 #include "dicomreader.h"
+#include <string>
 
 namespace asclepios::core
 {
